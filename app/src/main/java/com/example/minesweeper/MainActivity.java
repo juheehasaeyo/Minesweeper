@@ -21,7 +21,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
     private static int flags = 10; // 초기 깃발 수
     private static int mines = 10;  // 초기 지뢰 수
-    private static int blocks;
+    private static int blocks = 81;
     ToggleButton toggleButton;
     public static BlockButton[][] buttons;
     TextView minesTextView;
@@ -53,22 +53,22 @@ public class MainActivity extends AppCompatActivity {
             button.setEnabled(false); // 블록 열린 상태로 표시
             blocks--; // 남은 블록 수 감소
 
-            if (blocks == 0) {
-                handleGameWin();
-            }
             return false; // 지뢰가 아닌 경우 false 반환
         }
     }
 
     // 게임 종료 처리
     private void handleGameOver() {
-        Toast.makeText(MainActivity.this, "Game Over!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Game Over!", Toast.LENGTH_LONG).show();
     }
 
     // 게임 승리 처리
     private void handleGameWin() {
-        Toast.makeText(MainActivity.this, "You Win!", Toast.LENGTH_SHORT).show();
-        finish(); // 액티비티 종료
+        Toast.makeText(MainActivity.this, "You Win!", Toast.LENGTH_LONG).show();
+    }
+    // Mines 텍스트 업데이트 메소드
+    private void updateMinesText() {
+        minesTextView.setText("Mines : " + flags);
     }
 
     // 모든 블록을 클릭이 안되게 변경
@@ -125,6 +125,11 @@ public class MainActivity extends AppCompatActivity {
                 if (flag) {
                     setText("\uD83D\uDEA9"); // 깃발 표시
                     flags--;
+                    if (flags == 0) {
+                        handleGameWin();
+                        setAllBlocksClickable(false);  // 게임 오버 시 모든 블록 비활성화
+                    }
+
                 } else {
                     setText(""); // 깃발 해제
                     flags++;
@@ -132,11 +137,6 @@ public class MainActivity extends AppCompatActivity {
                 // Mines 텍스트 업데이트
                 updateMinesText();
             }
-        }
-
-        // Mines 텍스트 업데이트 메소드
-        private void updateMinesText() {
-            minesTextView.setText("Mines : " + flags);
         }
 
         // 주변 블록 열기 (재귀 호출)
@@ -243,5 +243,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+        updateMinesText();
     }
 }
