@@ -53,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
             button.setEnabled(false); // 블록 열린 상태로 표시
             blocks--; // 남은 블록 수 감소
 
+            if (blocks == 10) {
+                handleGameWin();
+                setAllBlocksClickable(false);  // 게임 오버 시 모든 블록 비활성화
+            }
             return false; // 지뢰가 아닌 경우 false 반환
         }
     }
@@ -74,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
     // 모든 블록을 클릭이 안되게 변경
     private void setAllBlocksClickable(boolean clickable) {
         TableLayout table = findViewById(R.id.tableLayout);
-        for (int i = 0; i < table.getChildCount(); i++) {
+        for (int i = 0; i < 9; i++) {
             TableRow row = (TableRow) table.getChildAt(i);
-            for (int j = 0; j < row.getChildCount(); j++) {
+            for (int j = 0; j < 9; j++) {
                 BlockButton blockButton = (BlockButton) row.getChildAt(j);
                 blockButton.setClickable(clickable);
             }
@@ -125,19 +129,17 @@ public class MainActivity extends AppCompatActivity {
                 if (flag) {
                     setText("\uD83D\uDEA9"); // 깃발 표시
                     flags--;
-                    if (flags == 0) {
-                        handleGameWin();
-                        setAllBlocksClickable(false);  // 게임 오버 시 모든 블록 비활성화
-                    }
-
-                } else {
-                    setText(""); // 깃발 해제
-                    flags++;
                 }
-                // Mines 텍스트 업데이트
-                updateMinesText();
             }
+            else {
+                flag = !flag;
+                setText(""); // 깃발 해제
+                flags++;
+            }
+            // Mines 텍스트 업데이트
+            updateMinesText();
         }
+
 
         // 주변 블록 열기 (재귀 호출)
         private void openNeighborBlocks(int x, int y, BlockButton[][] buttons) {
