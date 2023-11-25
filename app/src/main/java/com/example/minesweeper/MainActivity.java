@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    private static int flags = 10; // 초기 깃발 수
-    private static int mines = 10;  // 초기 지뢰 수
-    private static int blocks = 81;
+    private static int flags = 10; // 깃발이 꽂힌 블록 수
+    private static int blocks = 81; // 남은 블록 수
     ToggleButton toggleButton;
     public static BlockButton[][] buttons;
-    TextView minesTextView;
+    TextView minesTextView; // 남은 지뢰 수
 
     // 블록 열기 메소드
     public boolean breakBlock(BlockButton button) {
@@ -36,14 +35,14 @@ public class MainActivity extends AppCompatActivity {
         button.setBackgroundColor(Color.WHITE);
 
         if (button.mine) {
-            // 지뢰인 경우
+            // 블록이 지뢰라면
             button.setText("\uD83D\uDCA3"); // 지뢰 표시
             handleGameOver();
             setAllBlocksClickable(false);  // 게임 오버 시 모든 블록 비활성화
             return true; // 지뢰를 클릭한 경우 true 반환
-        } else {
+        } else { // 블록이 지뢰가 아니라면
             if (button.neighborMines == 0) {
-                // 주변에 지뢰가 없는 경우 재귀적으로 주변 블록 열기
+                // 주변 지뢰 수가 0 → 주변의 모든 블록 열기
                 button.openNeighborBlocks(button.x, button.y, buttons);
             } else {
                 // 주변에 지뢰가 있는 경우 주변 지뢰 수 표시
@@ -60,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
             return false; // 지뢰가 아닌 경우 false 반환
         }
     }
+
 
     // 게임 종료 처리
     private void handleGameOver() {
@@ -80,18 +80,17 @@ public class MainActivity extends AppCompatActivity {
         TableLayout table = findViewById(R.id.tableLayout);
         for (int i = 0; i < 9; i++) {
             TableRow row = (TableRow) table.getChildAt(i);
-            for (int j = 0; j < 9; j++) {
-                BlockButton blockButton = (BlockButton) row.getChildAt(j);
+            for (BlockButton blockButton : buttons[i]) {
                 blockButton.setClickable(clickable);
             }
         }
     }
 
     public class BlockButton extends Button {
-        private int x, y;
-        private boolean mine;
-        private boolean flag;
-        private int neighborMines;
+        private int x, y; // 버튼의 x, y 좌표
+        private boolean mine; // 지뢰인지 아닌지 표시
+        private boolean flag; // 깃발이 꽂혔는지 표시
+        private int neighborMines; // 블록 주변의 지뢰 수
 
         public BlockButton(Context context, int x, int y) {
             super(context);
@@ -130,8 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     setText("\uD83D\uDEA9"); // 깃발 표시
                     flags--;
                 }
-            }
-            else {
+            } else {
                 flag = !flag;
                 setText(""); // 깃발 해제
                 flags++;
@@ -196,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
         buttons = new BlockButton[9][9];
 
         // 지뢰 배치
-        ArrayList<Pair<Integer, Integer>> mineCoordinates = new ArrayList<>();
         Random random = new Random();
 
         for (int k = 0; k < 10; k++) {
@@ -204,9 +201,8 @@ public class MainActivity extends AppCompatActivity {
             do {
                 x = random.nextInt(9);
                 y = random.nextInt(9);
-            } while (mineCoordinates.contains(new Pair<>(x, y)));
+            } while (buttons[x][y] != null && buttons[x][y].mine);
 
-            mineCoordinates.add(new Pair<>(x, y));
             buttons[x][y] = new BlockButton(this, x, y);
             buttons[x][y].mine = true;
         }
