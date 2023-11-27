@@ -16,6 +16,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -193,12 +195,22 @@ public class MainActivity extends AppCompatActivity {
         // 지뢰 10개 랜덤 배치
         Random random = new Random();
 
+        // x 좌표와 y 좌표를 각각 담을 ArrayList 생성
+        List<Integer> xCoordinates = new ArrayList<>();
+        List<Integer> yCoordinates = new ArrayList<>();
+
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < 9; y++) {
+                xCoordinates.add(x);
+                yCoordinates.add(y);
+            }
+        }
+        Collections.shuffle(xCoordinates, random);
+        Collections.shuffle(yCoordinates, random);
+
         for (int k = 0; k < 10; k++) {
-            int x, y;
-            do {
-                x = random.nextInt(9);
-                y = random.nextInt(9);
-            } while (buttons[x][y] != null && buttons[x][y].mine);
+            int x = xCoordinates.get(k);
+            int y = yCoordinates.get(k);
 
             buttons[x][y] = new BlockButton(this, x, y);
             buttons[x][y].mine = true;
@@ -235,7 +247,6 @@ public class MainActivity extends AppCompatActivity {
                         1.0f);
                 buttons[i][j].setLayoutParams(layoutParams);
                 tableRow.addView(buttons[i][j]);
-
             }
         }
         updateMinesText();
