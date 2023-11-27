@@ -26,68 +26,6 @@ public class MainActivity extends AppCompatActivity {
     ToggleButton toggleButton;
     public static BlockButton[][] buttons;
     TextView minesTextView; // 남은 지뢰 수
-
-    // 블록 열기 메소드
-    public boolean breakBlock(BlockButton button) {
-        if (button.flag) {
-            // 깃발이 꽂힌 블록을 클릭하면 아무 일도 일어나지 않도록
-            return false;
-        }
-        button.setClickable(false); // 블록을 클릭 안되는 상태로 변경
-        button.setBackgroundColor(Color.WHITE);
-
-        if (button.mine) {
-            // 블록이 지뢰라면
-            button.setText("\uD83D\uDCA3"); // 지뢰 표시
-            handleGameOver();
-            setAllBlocksClickable(false);  // 게임 오버 시 모든 블록 비활성화
-            return true; // 지뢰를 클릭한 경우 true 반환
-        } else { // 블록이 지뢰가 아니라면
-            if (button.neighborMines == 0) {
-                // 주변 지뢰 수가 0 → 주변의 모든 블록 열기
-                button.openNeighborBlocks(button.x, button.y, buttons);
-            } else {
-                // 주변에 지뢰가 있는 경우 주변 지뢰 수 표시
-                button.setText(String.valueOf(button.neighborMines));
-            }
-
-            button.setEnabled(false); // 블록 열린 상태로 표시
-            blocks--; // 남은 블록 수 감소
-
-            if (blocks == 10) {
-                handleGameWin();
-                setAllBlocksClickable(false);  // 게임 오버 시 모든 블록 비활성화
-            }
-            return false; // 지뢰가 아닌 경우 false 반환
-        }
-    }
-
-
-    // 게임 종료 처리
-    private void handleGameOver() {
-        Toast.makeText(MainActivity.this, "Game Over!", Toast.LENGTH_LONG).show();
-    }
-
-    // 게임 승리 처리
-    private void handleGameWin() {
-        Toast.makeText(MainActivity.this, "You Win!", Toast.LENGTH_LONG).show();
-    }
-    // Mines 텍스트 업데이트 메소드
-    private void updateMinesText() {
-        minesTextView.setText("Mines : " + flags);
-    }
-
-    // 모든 블록을 클릭이 안되게 변경
-    private void setAllBlocksClickable(boolean clickable) {
-        TableLayout table = findViewById(R.id.tableLayout);
-        for (int i = 0; i < 9; i++) {
-            TableRow row = (TableRow) table.getChildAt(i);
-            for (BlockButton blockButton : buttons[i]) {
-                blockButton.setClickable(clickable);
-            }
-        }
-    }
-
     public class BlockButton extends Button {
         private int x, y; // 버튼의 x, y 좌표
         private boolean mine; // 지뢰인지 아닌지 표시
@@ -121,7 +59,40 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        // 블록 열기 메소드
+        public boolean breakBlock(BlockButton button) {
+            if (button.flag) {
+                // 깃발이 꽂힌 블록을 클릭하면 아무 일도 일어나지 않도록
+                return false;
+            }
+            button.setClickable(false); // 블록을 클릭 안되는 상태로 변경
+            button.setBackgroundColor(Color.WHITE);
 
+            if (button.mine) {
+                // 블록이 지뢰라면
+                button.setText("\uD83D\uDCA3"); // 지뢰 표시
+                handleGameOver();
+                setAllBlocksClickable(false);  // 게임 오버 시 모든 블록 비활성화
+                return true; // 지뢰를 클릭한 경우 true 반환
+            } else { // 블록이 지뢰가 아니라면
+                if (button.neighborMines == 0) {
+                    // 주변 지뢰 수가 0 → 주변의 모든 블록 열기
+                    button.openNeighborBlocks(button.x, button.y, buttons);
+                } else {
+                    // 주변에 지뢰가 있는 경우 주변 지뢰 수 표시
+                    button.setText(String.valueOf(button.neighborMines));
+                }
+
+                button.setEnabled(false); // 블록 열린 상태로 표시
+                blocks--; // 남은 블록 수 감소
+
+                if (blocks == 10) {
+                    handleGameWin();
+                    setAllBlocksClickable(false);  // 게임 오버 시 모든 블록 비활성화
+                }
+                return false; // 지뢰가 아닌 경우 false 반환
+            }
+        }
         // 깃발 토글 메소드
         public void toggleFlag() {
             // 깃발이 아니면
@@ -167,7 +138,30 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    // 게임 종료 처리
+    private void handleGameOver() {
+        Toast.makeText(MainActivity.this, "Game Over!", Toast.LENGTH_LONG).show();
+    }
 
+    // 게임 승리 처리
+    private void handleGameWin() {
+        Toast.makeText(MainActivity.this, "You Win!", Toast.LENGTH_LONG).show();
+    }
+    // Mines 텍스트 업데이트 메소드
+    private void updateMinesText() {
+        minesTextView.setText("Mines : " + flags);
+    }
+
+    // 모든 블록을 클릭이 안되게 변경
+    private void setAllBlocksClickable(boolean clickable) {
+        TableLayout table = findViewById(R.id.tableLayout);
+        for (int i = 0; i < 9; i++) {
+            TableRow row = (TableRow) table.getChildAt(i);
+            for (BlockButton blockButton : buttons[i]) {
+                blockButton.setClickable(clickable);
+            }
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
