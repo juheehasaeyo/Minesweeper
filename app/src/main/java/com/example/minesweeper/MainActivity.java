@@ -122,22 +122,19 @@ public class MainActivity extends AppCompatActivity {
 
         // 깃발 토글 메소드
         public void toggleFlag() {
-            if (!flag && flags > 0) {
-                // 깃발을 토글하고 남은 깃발 수가 0보다 큰 경우에만 토글 수행
-                flag = !flag;
-                if (flag) {
-                    setText("\uD83D\uDEA9"); // 깃발 표시
-                    flags--;
-                }
+            // 깃발이 아니면
+            if (!flag) {
+                flag = true;
+                setText("\uD83D\uDEA9");
+                flags--;
             } else {
-                flag = !flag;
+                flag = false;
                 setText(""); // 깃발 해제
                 flags++;
             }
             // Mines 텍스트 업데이트
             updateMinesText();
         }
-
 
         // 주변 블록 열기 (재귀 호출)
         private void openNeighborBlocks(int x, int y, BlockButton[][] buttons) {
@@ -193,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         TableLayout table = findViewById(R.id.tableLayout);
         buttons = new BlockButton[9][9];
 
-        // 지뢰 배치
+        // 지뢰 10개 랜덤 배치
         Random random = new Random();
 
         for (int k = 0; k < 10; k++) {
