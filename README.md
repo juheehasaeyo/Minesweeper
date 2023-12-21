@@ -1,5 +1,5 @@
 # Minesweeper
-2023-2 모바일프로그래밍 지뢰찾기 구현  
+2023-2 모바일프로그래밍 지뢰찾기 프로젝트  
 
 🗓️ 개발 기간: 2023.10.27 ~ 2023.11.29  
 🛠️ 기술 스택: Android studio, Java  
@@ -24,7 +24,7 @@
    - 깃발 꽂기/해제 toggleFlag()
    - 블록 열기 breakBlock()
 
-🖥 UI
+🖥 실행 화면
 ---
 <img width="200" alt="1_start" src="https://github.com/juheehasaeyo/Minesweeper/assets/118191954/1cf070fe-054a-4cbc-831d-ff43deaf7e04">
 <img width="200" alt="2_click" src="https://github.com/juheehasaeyo/Minesweeper/assets/118191954/6593c0f2-e055-469d-8753-8f23516f73a6">
